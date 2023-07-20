@@ -1,0 +1,224 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سهم‌یاب</title>
+
+    <!--Bootstrap-->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <!--Flickity-->
+    <link rel="stylesheet" href="{% static 'css/flickity.css' %}">
+    <!--Main Style-->
+    <link rel="stylesheet" href="{% static 'sass/main.css' %}">
+</head>
+
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="row">
+                <div class=" header__logo">
+                    <a href="{% url 'home' %}">
+                        <img src="{% static 'img/Logo.png' %}" alt="MOOVIE">
+                    </a>
+                </div>
+                <div class="col-lg-6 header__menu">
+                    <ul>
+                        <li class="header__menu-item header__menu-item--active"><a href="{% url 'home' %}">خانه</a></li>
+                        <li class="header__menu-item "><a href="{% url 'movie_list' type='rand' %}">اخبار</a></li>
+                        <li class="header__menu-item "><a href="{% url 'genres' %}">سهام</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4 header__search">
+                    <form action="{% url 'home' %}" method="POST">
+                        {% csrf_token %}
+                        <div class="header__search-container">
+                            <input type="text" name="search" id="" placeholder="جست و جو">
+                            <i class="moovie moovie-search"></i>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="main-slider">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 section-with-title  main-slider__content">
+                    <div class="section-with-title__title">
+                        <span>اخبار جدید</span> 
+                    </div>
+                    <div class="slider ">
+                        <div class="carousel" data-flickity='{  "wrapAround": true,
+                        "rightToLeft": false, "cellAlign": "left" ,  "contain": true , "imageLoaded" : true }'>
+                            {% for movie in top_release %}
+                                <div class="carousel-cell movie-item">
+                                    <div class="movie-item--link">
+                                        <a href="{% url 'movie_detail' movie_id=movie.id %}" class="cover-link"></a>
+                                        <img class="movie-item__img" src="{{movie.poster}}" alt="">
+                                        <div class="movie-item__rate movie-item__rate--good">{{movie.vote_average}}</div>
+                                        <div class="movie-item__overlay">
+                                            <a href="{% url 'movie_detail' movie_id=movie.id %}" class="movie-item__title">{{movie.title}}</a>
+                                            <ul class="movie-item__genre-list">
+                                                
+                                                <li class="movie-item__genre">
+                                                    {% for genre in movie.genres %}
+                                                        <a href="{% url 'movie_list' type=genre %}">{{genre}}</a>
+                                                    {% endfor %}
+                                                </li>
+                                                
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="section movie-tab">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 section-with-title">
+                    <div class="section-with-title__title">
+                        <span>سهام پیشنهادی</span>
+                    </div>
+                    <nav>
+                        <div class="nav nav-tabs movie-tab__tab" id="nav-tab" role="tablist">
+                            <a class="nav-item nav-link active" id="nav-newreleases-tab" data-toggle="tab"
+                                href="#nav-newreleases" role="tab" aria-controls="nav-newreleases"
+                                aria-selected="true">سهام</a>
+                            <a class="nav-item nav-link" id="nav-Movies-tab" data-toggle="tab" href="#nav-Movies"
+                                role="tab" aria-controls="nav-Movies" aria-selected="false">اخبار </a>
+
+                        </div>
+                    </nav>
+                </div>
+                <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="nav-newreleases" role="tabpanel"
+                        aria-labelledby="nav-newreleases-tab">
+                        <div class="movie-tab__content">
+                            {% for movie in top_rated %}
+                                <div class="carousel-cell movie-item">
+                                    <div class="movie-item--link">
+                                        <a href="{% url 'movie_detail' movie_id=movie.id %}" class="cover-link"></a>
+                                        <img class="movie-item__img" src="{{movie.poster}}" alt="">
+                                        <div class="movie-item__rate movie-item__rate--good">{{movie.vote_average}}</div>
+                                        <div class="movie-item__overlay">
+                                            <a href="{% url 'movie_detail' movie_id=movie.id %}" class="movie-item__title">{{movie.title}}</a>
+                                            <ul class="movie-item__genre-list">
+                                                <li class="movie-item__genre">
+                                                    {% for genre in movie.genres %}
+                                                        <a href="{% url 'movie_list' type=genre %}">{{genre}}</a>
+                                                    {% endfor %}
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="section suggestion-slider">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 section-with-title ">
+                    <!-- <div class="section-with-title__title">
+                        <span>Our Suggestion</span> for you
+                    </div> -->
+                    <!-- <div class="slider suggestion-slider__slider">
+                        <div class="carousel" data-flickity='{  "wrapAround": true, "pageDots" : false,
+                        "rightToLeft": false, "cellAlign": "left" ,  "contain": true , "imageLoaded" : true }'>
+                        {%for movie in random%}    
+                            <div class="carousel-cell movie-item">
+                                    
+                                <div class="movie-item--link">
+                                        <a href="{% url 'movie_detail' movie_id=movie.id %}" class="cover-link"></a>
+                                        <img class="movie-item__img" src="{{movie.poster}}" alt="">
+                                        <div class="movie-item__overlay">
+                                            <a href="{% url 'movie_detail' movie_id=movie.id %}" class="movie-item__title">{{movie.title}}</a>
+                                            <ul class="movie-item__genre-list">
+                                                <li class="movie-item__genre">
+                                                    {% for genre in movie.genres %}
+                                                        <a href="{% url 'movie_list' type=genre %}">{{genre}}</a>
+                                                    {% endfor %}
+                                                </li>
+                                            </ul>
+                                            <p class="movie-item__movie-about">
+                                                {{movie.overview}}
+                                            </p>
+                                            <div class="movie-item__label">
+                                                <span class="label">Director :</span>
+                                                {%for director in movie.directors %}
+                                                    <span class="data"> {{director}} </span> 
+                                                {%endfor%}
+                                            </div>
+                                            <div class="movie-item__label">
+                                                <span class="label">Writers :</span>
+                                                {%for writer in movie.writers %}
+                                                    <span class="data"> {{writer}} </span> 
+                                                {%endfor%}
+                                            </div>
+                                            <div class="movie-item__label">
+                                                <span class="label">Stars : </span>
+                                                <span class="data">
+                                                {{movie.casts|join:","}}
+                                                </span> 
+                                                </div>
+                                        </div>
+                                </div>
+                            </div>
+                        {%endfor%}
+                            
+                            </div>
+                        </div>
+
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-9 footer__about">
+                    <div class="footer__logo">
+                        <a href="{% url 'home' %}">
+                            <img src="{% static 'img/Logo.png' %}" alt="MOOVIE">
+                        </a>
+                        <a href="https://github.com/hosseinbahak/SE2">
+                            <img src="{% static 'img/GitHub-Mark-Light-32px.png' %}" alt="github">
+                        </a>
+                    </div>
+                    <div class="footer__about-content">
+                        <span>&copy; 2020 MOOVIE</span>
+                        <span>Created by The Makers Team</span>
+                    </div>
+                </div>
+                <div class="col-3 footer__go-top">
+                    <button class="go-top" onclick="$('html, body').animate({scrollTop:0},'100');"><i
+                            class="moovie moovie-arrow-up"></i></button>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!--JQuery-->
+    <script src="{% static 'js/jquery-3.5.1.min.js' %}"></script>
+    <!--Flickity-->
+    <script src="{% static 'js/flickity.pkgd.min.js' %}"></script>
+    <!--bootstrap-->
+    <script src="{% static 'js/jquery-3.5.1.min.js' %}"></script>
+    <!--my JS-->
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+
+</html>
